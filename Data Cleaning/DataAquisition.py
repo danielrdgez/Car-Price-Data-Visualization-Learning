@@ -7,30 +7,33 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains 
 import time
 
-path = "C:\Program Files (x86)\chromedriver.exe"
+driver = webdriver.Chrome()
 
-driver = webdriver.Chrome(path)
+options = webdriver.ChromeOptions()
 
-input_make = "hyundai"      #input(f'Make:{str()}').casefold()
-input_model = "veloster"        #input(f'Model:{str()}').casefold()
+options.add_experimental_option('excludeSwitches', ['enable-logging'])
+
+#input_make = "hyundai"      #input(f'Make:{str()}').casefold()
+#input_model = "veloster"        #input(f'Model:{str()}').casefold()
 input_zip = "33186"      #input(f'Zip:{int(max=5)}')
 input_radius = "50"       #input(f'Radius:{str(max=4)}')
+input_year = 2000
+input_state = "state"
 
 
-driver.get(f'https://www.autotempest.com/results?radius={input_radius}&zip={input_zip}')
+driver.get(f'https://www.autotempest.com/results?localization={input_state}&zip={input_zip}&minyear={input_year}')
 
 continue_buttons_xpath = {
-    "autotempest" : "/html/body/div[1]/div[3]/section[1]/section/section[2]/section/button", 
+    "autotempest" : "/html/body/div[1]/div[3]/section[1]/section/section[2]/section/button",
     "cars" : "/html/body/div[1]/div[3]/section[1]/section/section[3]/section/button",
     "carvana" : "/html/body/div[1]/div[3]/section[1]/section/section[4]/section/button",
     "ebay" : "/html/body/div[1]/div[3]/section[1]/section/section[5]/section/button",
     "truecar" : "/html/body/div[1]/div[3]/section[1]/section/section[6]/section/button",
-    "other" : "/html/body/div[1]/div[3]/section[1]/section/section[8]/section/button",
+    "other" : "/html/body/div[1]/div[3]/section[1]/section/section[7]/section/button"
 }
     
 def click_button(xpath):
@@ -61,20 +64,20 @@ def car_df():
         else:
             car_dictionary["price"].append("Inquire")
 
-        mileage = section.find("span", class_="info mileage")
+        mileage = section.find("span", class_="mileage")
         if mileage != None:
             mileage_car = mileage.text
             car_dictionary["mileage"].append(mileage_car)
         else:
             car_dictionary["mileage"].append(f"None")
                         
-        name = section.find("a", class_="listing-link source-link")
+        name = section.find("span", class_="title-wrap listing-title")
         if name != None:
             name_car = name.text.strip().split(" ")
             car_dictionary["year"].append(name_car[0])
             car_dictionary["make"].append(name_car[1])
             car_dictionary["model"].append(name_car[2])
-            car_dictionary["trim"].append(name_car[3:])
+            car_dictionary["trim"].append(name_car[3:6])
             
         distance = section.find("span", class_="distance")
         if distance != None:
@@ -85,6 +88,8 @@ def car_df():
                         
     car_dataframe = pd.DataFrame.from_dict(car_dictionary)
     
+    
+    
     print(car_dataframe)
     
     return car_dataframe
@@ -94,8 +99,7 @@ def car_data():
         try:
             for button in continue_buttons_xpath.values():
                 click_button(button)
-        except TimeoutException
-            print("timeout session")
+        except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
             break    
 
 if __name__ == "__main__":
