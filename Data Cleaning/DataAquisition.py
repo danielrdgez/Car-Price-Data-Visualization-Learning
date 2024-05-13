@@ -9,7 +9,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains 
-import time
+from datetime import date
+
+output_directory = r'C:\Users\danie\Code\CAR_VIS\Car-Price-Data-Visualization-Learning\OUTPUT'
 
 driver = webdriver.Chrome()
 
@@ -29,7 +31,7 @@ driver.get(f'https://www.autotempest.com/results?localization={input_state}&zip=
 
 continue_buttons_xpath = {
     "autotempest" : "/html/body/div[1]/div[3]/section[1]/section/section[2]/section/button",
-    "cars" : "/html/body/div[1]/div[3]/section[1]/section/section[3]/section/button",
+    #"cars" : "/html/body/div[1]/div[3]/section[1]/section/section[3]/section/button",
     "carvana" : "/html/body/div[1]/div[3]/section[1]/section/section[4]/section/button",
     "ebay" : "/html/body/div[1]/div[3]/section[1]/section/section[5]/section/button",
     "truecar" : "/html/body/div[1]/div[3]/section[1]/section/section[6]/section/button",
@@ -88,7 +90,7 @@ def car_df():
                         
     car_dataframe = pd.DataFrame.from_dict(car_dictionary)
     
-    
+    car_dataframe.to_csv(output_directory + f"\CAR_DATA_{date.today()}.csv", index=False)
     
     print(car_dataframe)
     
