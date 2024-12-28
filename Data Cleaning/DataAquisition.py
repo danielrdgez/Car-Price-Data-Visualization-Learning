@@ -31,7 +31,7 @@ driver.get(f'https://www.autotempest.com/results?localization={input_state}&zip=
 
 continue_buttons_xpath = {
     "autotempest" : "/html/body/div[1]/div[3]/section[1]/section/section[2]/section/button",
-    #"cars" : "/html/body/div[1]/div[3]/section[1]/section/section[3]/section/button",
+    "cars" : "/html/body/div[1]/div[3]/section[1]/section/section[3]/section/button",
     "carvana" : "/html/body/div[1]/div[3]/section[1]/section/section[4]/section/button",
     "ebay" : "/html/body/div[1]/div[3]/section[1]/section/section[5]/section/button",
     "truecar" : "/html/body/div[1]/div[3]/section[1]/section/section[6]/section/button",
