@@ -215,7 +215,7 @@ def car_df(existing_df=None):
         else:
             car_dictionary["time_listed"].append("")
 
-        branded_title = section.find("span", class_="title_status")
+        branded_title = section.find("span", class_="title-status")
         if branded_title != None:
             branded_title_car = 1
             car_dictionary["branded_title"].append(branded_title_car)
